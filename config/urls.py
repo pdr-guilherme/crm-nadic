@@ -22,5 +22,10 @@ from crm import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("produtos/", views.ProdutoList.as_view(), name="produtos")
+    path("produtos/", views.ProdutoList.as_view(), name="produtos"),
+    path("produtos/novo/", views.ProdutoCreateForm.as_view(), name="criar_produto"),
+    path(
+        "produto/<int:pk>/editar/", views.ProdutoUpdate.as_view(), name="editar_produto"
+    ),
+    path("produto/<int:pk>/apagar/", views.apagar_produto, name="apagar_produto"),
 ]

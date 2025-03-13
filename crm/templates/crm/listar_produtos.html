@@ -2,14 +2,24 @@
 
 {% block content %}
   <h1>Lista de Produtos</h1>
+
+  {% if user.is_superuser %}
+    <p>
+      <a href="{% url 'criar_produto' %}">Adicionar Produto</a>
+    </p>
+  {% endif %}
+
   <table>
     <thead>
       <tr>
         <th>Nome</th>
-        <th>Preço</th>
+        <th>Preço (R$)</th>
         <th>Descrição</th>
         <th>Categoria</th>
         <th>Ativo?</th>
+
+        {% if user.is_superuser %}<th>Opções</th>{% endif %}
+
       </tr>
     </thead>
     <tbody>
@@ -26,10 +36,34 @@
             <td>Não</td>
           {% endif %}
 
+          {% if user.is_superuser %}
+            <td>
+              <a href="{% url 'editar_produto' produto.id %}">Editar</a>
+              <form id="form-apagar-{{ produto.id }}"
+                    method="post"
+                    action="{% url 'apagar_produto' produto.id %}"
+                    style="display: none">
+                {% csrf_token %}
+              </form>
+              <button type="submit" onclick="confirmar({{ produto.id }})">Apagar</button>
+            </td>
+          {% endif %}
+
         </tr>
       {% empty %}
-        <tr><td colspan="5">Nenhum produto cadastrado</td></tr>
+        <tr>
+          <td colspan="5">Nenhum produto cadastrado</td>
+        </tr>
       {% endfor %}
     </tbody>
   </table>
+  <script>
+    function confirmar(idProduto) {
+      var confirmado = confirm("Tem certeza que quer apagar este produto?");
+
+      if (confirmado) {
+        document.getElementById("form-apagar-" + idProduto).submit()
+      }
+    }
+  </script>
 {% endblock content %}
