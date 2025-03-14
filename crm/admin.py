@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Produto, Estoque
+from .models import Cliente, Produto, Estoque
 
 
 class ProdutoAdmin(admin.ModelAdmin):
@@ -13,5 +13,16 @@ class EstoqueAdmin(admin.ModelAdmin):
     list_display = ("produto", "quantia")
 
 
+class ClienteAdmin(admin.ModelAdmin):
+    fieldsets = [
+        ("Dados do cliente", {"fields": ["nome"]}),
+        ("Informações de contato", {"fields": ["telefone", "email", "endereco"]}),
+        ("Outros dados", {"fields": ["fonte", "status", "notas"]})
+    ]
+    list_display = ("nome", "telefone", "email", "endereco", "status")
+    list_filter = ("status",)
+
+
 admin.site.register(Produto, ProdutoAdmin)
 admin.site.register(Estoque, EstoqueAdmin)
+admin.site.register(Cliente, ClienteAdmin)
