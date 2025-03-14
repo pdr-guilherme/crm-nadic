@@ -8,6 +8,10 @@ from .forms import EstoqueForm, ProdutoForm
 from .models import Produto, Estoque
 
 
+class IndexView(generic.TemplateView):
+    template_name = "crm/index.html"
+
+
 class ProdutoList(generic.ListView):
     model = Produto
     context_object_name = "produtos"
@@ -55,7 +59,7 @@ class EstoqueList(generic.ListView):
 class EstoqueCreateForm(VerificarSuperusuarioMixin, generic.FormView):
     form_class = EstoqueForm
     template_name = "crm/criar_estoque.html"
-    success_url = reverse_lazy("listar_estoque")
+    success_url = reverse_lazy("estoque")
 
     def form_valid(self, form):
         form.save()
@@ -66,7 +70,7 @@ class EstoqueUpdate(VerificarSuperusuarioMixin, generic.UpdateView):
     model = Estoque
     form_class = EstoqueForm
     template_name = "crm/editar_estoque.html"
-    success_url = reverse_lazy("listar_estoque")
+    success_url = reverse_lazy("estoque")
 
 
 def apagar_estoque(request, pk):
