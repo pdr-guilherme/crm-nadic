@@ -198,3 +198,91 @@ class ApagarEstoqueTest(TestCase):
         resposta = self.client.get(self.url)
 
         self.assertEqual(resposta.status_code, 403)
+
+
+class ClienteCreateFormTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.super_usuario = User.objects.create_superuser("admin", "admin@email.com", "admin")
+        cls.url = reverse("criar_cliente")
+
+    def test_form_valid(self):
+        self.client.login(username="admin", password="admin")
+
+        dados_validos = {
+            "nome": "Cliente comum",
+            "telefone": "(11) 99122-1331",
+            "email": "cliente@email.com",
+            "endereco": "Ruas das Flores, 123",
+            "fonte": "Viu na rua",
+            "status": "ativo",
+            "notas": ""
+        }
+
+        resposta = self.client.post(self.url, dados_validos)
+
+        self.assertRedirects(resposta, reverse("clientes"))
+        self.assertEqual(resposta.status_code, 302)
+        self.assertTrue(Cliente.objects.filter(id=1).exists())
+
+    def test_form_invalid(self):
+        self.client.login(username="admin", password="admin")
+
+        dados_invalidos = {
+            "nome": "Cliente comum",
+            "telefone": "(11) 99122-1331",
+            "email": "cliente@email.com",
+            "endereco": "", # mora na rua
+            "fonte": "Viu na rua",
+            "status": "ativo",
+            "notas": ""
+        }
+
+        resposta = self.client.post(self.url, dados_invalidos)
+
+        self.assertEqual(resposta.status_code, 200)
+        self.assertFormError(resposta.context["form"], "endereco", "Este campo é obrigatório.")
+
+
+class ApagarClienteTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.super_usuario = User.objects.create_superuser("admin", "admin@email.com", "admin")
+        cls.usuario_comum = User.objects.create_user(
+            "usuario", "usuario@email.com", "usuario"
+        )
+
+    def setUp(self):
+        self.cliente = Cliente.objects.create(
+            nome="Cliente comum",
+            telefone="(11) 99122-1331",
+            email="cliente@email.com",
+            endereco="Ruas das Flores, 123",
+            fonte="Viu na rua",
+            status="ativo",
+            notas=""
+        )
+        self.url = reverse("apagar_cliente", kwargs={"pk": self.cliente.id})
+
+    def test_apagar_superusuario(self):
+        self.client.login(username="admin", password="admin")
+
+        resposta = self.client.post(self.url)
+
+        self.assertEqual(Cliente.objects.count(), 0)
+        self.assertRedirects(resposta, reverse("clientes"))
+
+    def test_apagar_usuario_comum(self):
+        self.client.login(username="usuario", password="usuario")
+
+        resposta = self.client.post(self.url)
+
+        self.assertEqual(Cliente.objects.count(), 1)
+        self.assertEqual(resposta.status_code, 403)
+
+    def test_apagar_sem_metodo_post(self):
+        self.client.login(username="admin", password="admin")
+
+        resposta = self.client.get(self.url)
+
+        self.assertEqual(resposta.status_code, 403)
