@@ -1,0 +1,10 @@
+{% extends "crm/base.html" %}
+
+{% block content %}
+  <h1>Menu Principal</h1>
+  <ul>
+    <li><a href="{% url 'produtos' %}">Ver produtos</a></li>
+    <li><a href="{% url 'estoque' %}">Ver estoque</a></li>
+    <li><a href="{% url 'clientes' %}">Ver clientes</a></li>
+  </ul>
+{% endblock content %}
