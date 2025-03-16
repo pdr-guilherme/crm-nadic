@@ -2,30 +2,38 @@
 
 {% block content %}
   <h1>Lista de Clientes</h1>
+
   {% if user.is_superuser %}
     <p>
       <a href="{% url 'criar_cliente' %}">Adicionar Cliente</a>
     </p>
   {% endif %}
+
   <ul>
     {% for cliente in clientes %}
+
       {% if user.is_superuser %}
         <li>{{ cliente }}</li>
-        <li><a href="{% url 'editar_cliente' cliente.id %}">Editar</a></li>
         <li>
-          <form id="form-apagar-{{ produto.id }}"
-                    method="post"
-                    action="{% url 'apagar_produto' produto.id %}"
-                    style="display: none">
-                {% csrf_token %}
-              </form>
-              <button type="submit" onclick="confirmar({{ produto.id }})">Apagar</button>
+          <a href="{% url 'editar_cliente' cliente.id %}">Editar</a>
+        </li>
+        <li>
+          <form id="form-apagar-{{ cliente.id }}"
+                method="post"
+                action="{% url 'apagar_cliente' cliente.id %}"
+                style="display: none">
+            {% csrf_token %}
+          </form>
+          <button type="submit" onclick="confirmar({{ cliente.id }})">Apagar</button>
         </li>
       {% else %}
         <li>{{ cliente }}</li>
       {% endif %}
+
     {% empty %}
-      <li><h2>Não há clientes cadastrados ainda</h2></li>
+      <li>
+        <h2>Não há clientes cadastrados ainda</h2>
+      </li>
     {% endfor %}
   </ul>
   <script>
