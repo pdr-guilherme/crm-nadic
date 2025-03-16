@@ -1,0 +1,58 @@
+{% extends "crm/base.html" %}
+
+{% block content %}
+  <h1>Lista de produtos no estoque</h1>
+  {% if user.is_superuser %}
+    <p>
+      <a href="{% url 'criar_estoque' %}">Adicionar produto ao estoque</a>
+    </p>
+  {% endif %}
+  <table>
+    <thead>
+      <tr>
+        <th>Produto</th>
+        <th>Quantia disponível</th>
+
+        {% if user.is_superuser %}<th>Opções</th>{% endif %}
+
+      </tr>
+    </thead>
+    <tbody>
+      {% for produto_estoque in estoque %}
+        <tr>
+          <td>{{ produto_estoque.produto }}</td>
+          <td>{{ produto_estoque.quantia }}</td>
+
+        {% if user.is_superuser %}
+          <td>
+            <a href="{% url 'editar_estoque' produto_estoque.id %}">Editar</a>
+
+            <form id="form-apagar-{{ produto_estoque.id }}"
+                  method="post"
+                  action="{% url 'apagar_estoque' produto_estoque.id %}"
+                  style="display: none">
+              {% csrf_token %}
+            </form>
+            <button type="submit" onclick="confirmar({{ produto_estoque.id }})">Apagar</button>
+          </td>
+        {% endif %}
+        </tr>
+      {% empty %}
+        {% if user.is_superuser %}
+          <tr colspan="3"><td>Não há produtos no estoque</td></tr>
+        {% else %}
+          <tr colspan="2"><td>Não há produtos no estoque</td></tr>
+        {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+  <script>
+    function confirmar(idProduto) {
+      var confirmado = confirm("Tem certeza que quer remover este produto do estoque?");
+
+      if (confirmado) {
+        document.getElementById("form-apagar-" + idProduto).submit()
+      }
+    }
+  </script>
+{% endblock content %}
