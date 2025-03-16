@@ -1,5 +1,7 @@
 {% extends "crm/base.html" %}
 
+{% load static %}
+
 {% block content %}
   <h1>Lista de Produtos</h1>
 
@@ -45,7 +47,7 @@
                     style="display: none">
                 {% csrf_token %}
               </form>
-              <button type="submit" onclick="confirmar({{ produto.id }})">Apagar</button>
+              <button type="submit" onclick="apagarObjeto({{ produto.id }})">Apagar</button>
             </td>
           {% endif %}
 
@@ -61,13 +63,5 @@
       {% endfor %}
     </tbody>
   </table>
-  <script>
-    function confirmar(idProduto) {
-      var confirmado = confirm("Tem certeza que quer apagar este produto?");
-
-      if (confirmado) {
-        document.getElementById("form-apagar-" + idProduto).submit()
-      }
-    }
-  </script>
+  <script src="{% static 'utils.js' %}"></script>
 {% endblock content %}

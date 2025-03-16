@@ -1,5 +1,7 @@
 {% extends "crm/base.html" %}
 
+{% load static %}
+
 {% block content %}
   <h1>Lista de produtos no estoque</h1>
   {% if user.is_superuser %}
@@ -33,7 +35,7 @@
                   style="display: none">
               {% csrf_token %}
             </form>
-            <button type="submit" onclick="confirmar({{ produto_estoque.id }})">Apagar</button>
+            <button type="submit" onclick="apagarObjeto({{ produto_estoque.id }})">Apagar</button>
           </td>
         {% endif %}
         </tr>
@@ -46,13 +48,5 @@
       {% endfor %}
     </tbody>
   </table>
-  <script>
-    function confirmar(idProduto) {
-      var confirmado = confirm("Tem certeza que quer remover este produto do estoque?");
-
-      if (confirmado) {
-        document.getElementById("form-apagar-" + idProduto).submit()
-      }
-    }
-  </script>
+  <script src="{% static 'utils.js' %}"></script>
 {% endblock content %}
