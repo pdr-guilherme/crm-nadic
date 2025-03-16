@@ -26,7 +26,7 @@ class ProdutoList(generic.ListView):
 
 class ProdutoCreateForm(VerificarSuperusuarioMixin, generic.FormView):
     form_class = ProdutoForm
-    template_name = "crm/criar_produto.html"
+    template_name = "crm/criar.html"
     success_url = reverse_lazy("produtos")
 
     def form_valid(self, form):
@@ -37,7 +37,7 @@ class ProdutoCreateForm(VerificarSuperusuarioMixin, generic.FormView):
 class ProdutoUpdate(VerificarSuperusuarioMixin, generic.UpdateView):
     model = Produto
     form_class = ProdutoForm
-    template_name = "crm/editar_produto.html"
+    template_name = "crm/editar.html"
     success_url = reverse_lazy("produtos")
 
 
@@ -60,7 +60,7 @@ class EstoqueList(generic.ListView):
 
 class EstoqueCreateForm(VerificarSuperusuarioMixin, generic.FormView):
     form_class = EstoqueForm
-    template_name = "crm/criar_estoque.html"
+    template_name = "crm/criar.html"
     success_url = reverse_lazy("estoque")
 
     def form_valid(self, form):
@@ -71,7 +71,7 @@ class EstoqueCreateForm(VerificarSuperusuarioMixin, generic.FormView):
 class EstoqueUpdate(VerificarSuperusuarioMixin, generic.UpdateView):
     model = Estoque
     form_class = EstoqueForm
-    template_name = "crm/editar_estoque.html"
+    template_name = "crm/editar.html"
     success_url = reverse_lazy("estoque")
 
 
@@ -94,7 +94,7 @@ class ClienteList(generic.ListView):
 
 class ClienteFormCreate(VerificarSuperusuarioMixin, generic.FormView):
     form_class = ClienteForm
-    template_name = "crm/criar_cliente.html"
+    template_name = "crm/criar.html"
     success_url = reverse_lazy("clientes")
 
     def form_valid(self, form):
@@ -105,7 +105,7 @@ class ClienteFormCreate(VerificarSuperusuarioMixin, generic.FormView):
 class ClienteUpdate(VerificarSuperusuarioMixin, generic.UpdateView):
     model = Cliente
     form_class = ClienteForm
-    template_name = "crm/editar_produto.html"
+    template_name = "crm/editar.html"
     success_url = reverse_lazy("clientes")
 
 
