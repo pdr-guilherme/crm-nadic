@@ -4,23 +4,24 @@ from django.urls import reverse_lazy
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
 
-from .forms import EstoqueForm, ProdutoForm
-from .models import Produto, Estoque
+from .forms import EstoqueForm, ProdutoForm, ClienteForm
+from .models import Produto, Estoque, Cliente
 
 
 class IndexView(generic.TemplateView):
     template_name = "crm/index.html"
 
 
+class VerificarSuperusuarioMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_superuser
+
+
+# Produto
 class ProdutoList(generic.ListView):
     model = Produto
     context_object_name = "produtos"
     template_name = "crm/listar_produtos.html"
-
-
-class VerificarSuperusuarioMixin(UserPassesTestMixin):
-    def test_func(self):
-        return self.request.user.is_superuser
 
 
 class ProdutoCreateForm(VerificarSuperusuarioMixin, generic.FormView):
@@ -50,6 +51,7 @@ def apagar_produto(request, pk):
     return HttpResponseForbidden()
 
 
+# Estoque
 class EstoqueList(generic.ListView):
     model = Estoque
     context_object_name = "estoque"
@@ -80,4 +82,38 @@ def apagar_estoque(request, pk):
         estoque = get_object_or_404(Estoque, id=pk)
         estoque.delete()
         return redirect("estoque")
+    return HttpResponseForbidden()
+
+
+# Clientes
+class ClienteList(generic.ListView):
+    model = Cliente
+    context_object_name = "clientes"
+    template_name = "crm/listar_clientes.html"
+
+
+class ClienteFormCreate(VerificarSuperusuarioMixin, generic.FormView):
+    form_class = ClienteForm
+    template_name = "crm/criar_cliente.html"
+    success_url = reverse_lazy("clientes")
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+
+class ClienteUpdate(VerificarSuperusuarioMixin, generic.UpdateView):
+    model = Cliente
+    form_class = ClienteForm
+    template_name = "crm/editar_produto.html"
+    success_url = reverse_lazy("clientes")
+
+
+def apagar_cliente(request, pk):
+    usuario = request.user
+    autenticado = usuario.is_authenticated and usuario.is_superuser
+    if request.method == "POST" and autenticado:
+        cliente = get_object_or_404(Cliente, id=pk)
+        cliente.delete()
+        return redirect("clientes")
     return HttpResponseForbidden()

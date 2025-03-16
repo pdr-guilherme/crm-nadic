@@ -32,5 +32,9 @@ urlpatterns = [
     path("estoque/", views.EstoqueList.as_view(), name="estoque"),
     path("estoque/novo/", views.EstoqueCreateForm.as_view(), name="criar_estoque"),
     path("estoque/<int:pk>/editar/", views.EstoqueUpdate.as_view(), name="editar_estoque"),
-    path("estoque/<int:pk>/apagar/", views.apagar_estoque, name="apagar_estoque")
+    path("estoque/<int:pk>/apagar/", views.apagar_estoque, name="apagar_estoque"),
+    path("clientes/", views.ClienteList.as_view(), name="clientes"),
+    path("clientes/novo/", views.ClienteFormCreate.as_view(), name="criar_cliente"),
+    path("clientes/<int:pk>/editar/", views.ClienteUpdate.as_view(), name="editar_cliente"),
+    path("clientes/<int:pk>/apagar/", views.apagar_cliente, name="apagar_cliente"),
 ]
