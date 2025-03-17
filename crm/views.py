@@ -1,11 +1,13 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.db.models.fields.related import ReverseManyToOneDescriptor
 from django.views import generic
 from django.urls import reverse_lazy
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
 
-from .forms import EstoqueForm, ProdutoForm, ClienteForm
-from .models import Produto, Estoque, Cliente
+from .forms import ProdutoForm, EstoqueForm, ClienteForm, LeadForm
+from .models import Produto, Estoque, Cliente, Lead
+from .utils import apagar_objeto
 
 
 class IndexView(generic.TemplateView):
@@ -42,13 +44,8 @@ class ProdutoUpdate(VerificarSuperusuarioMixin, generic.UpdateView):
 
 
 def apagar_produto(request, pk):
-    usuario = request.user
-    autenticado = usuario.is_authenticated and usuario.is_superuser
-    if request.method == "POST" and autenticado:
-        produto = get_object_or_404(Produto, id=pk)
-        produto.delete()
-        return redirect("produtos")
-    return HttpResponseForbidden()
+    resposta = apagar_objeto(request, pk, Produto, "produtos")
+    return resposta
 
 
 # Estoque
@@ -76,14 +73,8 @@ class EstoqueUpdate(VerificarSuperusuarioMixin, generic.UpdateView):
 
 
 def apagar_estoque(request, pk):
-    usuario = request.user
-    autenticado = usuario.is_authenticated and usuario.is_superuser
-    if request.method == "POST" and autenticado:
-        estoque = get_object_or_404(Estoque, id=pk)
-        estoque.delete()
-        return redirect("estoque")
-    return HttpResponseForbidden()
-
+    resposta = apagar_objeto(request, pk, Estoque, "estoque")
+    return resposta
 
 # Clientes
 class ClienteList(generic.ListView):
@@ -110,10 +101,35 @@ class ClienteUpdate(VerificarSuperusuarioMixin, generic.UpdateView):
 
 
 def apagar_cliente(request, pk):
-    usuario = request.user
-    autenticado = usuario.is_authenticated and usuario.is_superuser
-    if request.method == "POST" and autenticado:
-        cliente = get_object_or_404(Cliente, id=pk)
-        cliente.delete()
-        return redirect("clientes")
-    return HttpResponseForbidden()
+    resposta = apagar_objeto(request, pk, Cliente, "clientes")
+    return resposta
+
+
+# Leads
+class LeadList(generic.ListView):
+    model = Lead
+    context_object_name = "leads"
+    template_name = "crm/listar_leads.html"
+
+
+class LeadFormCreate(VerificarSuperusuarioMixin, generic.FormView):
+    form_class = LeadForm
+    template_name = "crm/criar.html"
+    success_url = reverse_lazy("leads")
+
+    def form_valid(self, form):
+        form.instance.responsavel = self.request.user
+        form.save()
+        return super().form_valid(form)
+
+
+class LeadUpdate(VerificarSuperusuarioMixin, generic.UpdateView):
+    model = Lead
+    form_class = LeadForm
+    template_name = "crm/editar.html"
+    success_url = reverse_lazy("leads")
+
+
+def apagar_lead(request, pk):
+    resposta = apagar_objeto(request, pk, Lead, "leads")
+    return resposta
