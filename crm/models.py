@@ -83,7 +83,7 @@ class Lead(models.Model):
     notas = models.TextField("Notas e pontos importantes", blank=True, default="")
     produto_interesse = models.CharField("Produtos ou serviços de interesse", max_length=255)
     data_conversao = models.DateTimeField("Data de conversão", blank=True, null=True)
-    responsavel = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    responsavel = models.ForeignKey(User, verbose_name="Responsável", on_delete=models.SET_NULL, null=True)
 
     class Meta:
         verbose_name = "lead"
