@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Cliente, Produto, Estoque
+from .models import Cliente, Lead, Produto, Estoque
 
 
 class ProdutoAdmin(admin.ModelAdmin):
@@ -23,6 +23,17 @@ class ClienteAdmin(admin.ModelAdmin):
     list_filter = ("status",)
 
 
+class LeadAdmin(admin.ModelAdmin):
+    fieldsets = [
+        ("Dados do Lead", {"fields": ["nome"]}),
+        ("Informações de contato", {"fields": ["telefone", "email", "endereco"]}),
+        ("Outros dados", {"fields": ["fonte", "status", "notas", "produto_interesse", "data_conversao"]})
+    ]
+    list_display = ("nome", "telefone", "email", "endereco", "status")
+    list_filter = ("status", )
+
+
 admin.site.register(Produto, ProdutoAdmin)
 admin.site.register(Estoque, EstoqueAdmin)
 admin.site.register(Cliente, ClienteAdmin)
+admin.site.register(Lead, LeadAdmin)

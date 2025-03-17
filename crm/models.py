@@ -1,5 +1,5 @@
+from django.contrib.auth.models import User
 from django.db import models
-
 
 # tipo de loja: floricultura
 
@@ -66,8 +66,33 @@ class Cliente(models.Model):
 
 
 class Lead(models.Model):
-    pass
+    STATUS_CHOICES = [
+        ("novo", "Novo"),
+        ("em_progresso", "Em Progresso"),
+        ("qualificado", "Qualificado"),
+        ("desqualificado", "Desqualificado"),
+        ("fechado", "Fechado"),
+    ]
+
+    nome = models.CharField("Nome", max_length=255)
+    telefone = models.CharField("Telefone", max_length=15)
+    email = models.EmailField("E-mail")
+    endereco = models.TextField("Endereço")
+    fonte = models.CharField("Fonte", max_length=255)
+    status = models.CharField("Status", max_length=25, choices=STATUS_CHOICES, default="ativo")
+    notas = models.TextField("Notas e pontos importantes", blank=True, default="")
+    produto_interesse = models.CharField("Produtos ou serviços de interesse", max_length=255)
+    data_conversao = models.DateTimeField("Data de conversão", blank=True, null=True)
+    responsavel = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        verbose_name = "lead"
+        verbose_name_plural = "leads"
+        ordering = ["nome",]
+
+    def __str__(self):
+        return f"Lead {self.id} - {self.nome}, {self.email}, {self.status}"
 
 
-class Venda(models.Model):
-    pass
+# class Venda(models.Model):
+#     pass
