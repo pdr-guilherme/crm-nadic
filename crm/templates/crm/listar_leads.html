@@ -1,0 +1,42 @@
+{% extends "crm/base.html" %}
+
+{% load static %}
+
+{% block content %}
+  <h1>Lista de Leads</h1>
+
+  {% if user.is_superuser %}
+    <p>
+      <a href="{% url 'criar_lead' %}">Adicionar Lead</a>
+    </p>
+  {% endif %}
+
+  <ul>
+    {% for lead in leads %}
+
+      {% if user.is_superuser %}
+        <li>{{ lead }}</li>
+        <li>
+          <a href="{% url 'editar_lead' lead.id %}">> Editar</a>
+        </li>
+        <li>
+          <form id="form-apagar-{{ lead.id }}"
+                method="post"
+                action="{% url 'apagar_lead' lead.id %}"
+                style="display: none">
+            {% csrf_token %}
+          </form>
+          <button type="submit" onclick="apagarObjeto({{ lead.id }})">Apagar</button>
+        </li>
+      {% else %}
+        <li>{{ lead }}</li>
+      {% endif %}
+
+    {% empty %}
+      <li>
+        <h2>Não há leads cadastrados ainda</h2>
+      </li>
+    {% endfor %}
+  </ul>
+  <script src="{% static 'utils.js' %}"></script>
+{% endblock content %}

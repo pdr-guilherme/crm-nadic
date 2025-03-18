@@ -37,4 +37,8 @@ urlpatterns = [
     path("clientes/novo/", views.ClienteFormCreate.as_view(), name="criar_cliente"),
     path("clientes/<int:pk>/editar/", views.ClienteUpdate.as_view(), name="editar_cliente"),
     path("clientes/<int:pk>/apagar/", views.apagar_cliente, name="apagar_cliente"),
+    path("leads/", views.LeadList.as_view(), name="leads"),
+    path("leads/novo/", views.LeadFormCreate.as_view(), name="criar_lead"),
+    path("leads/<int:pk>/editar/", views.LeadUpdate.as_view(), name="editar_lead"),
+    path("leads/<int:pk>/apagar/", views.apagar_lead, name="apagar_lead")
 ]
