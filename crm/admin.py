@@ -29,7 +29,7 @@ class LeadAdmin(admin.ModelAdmin):
         ("Informações de contato", {"fields": ["telefone", "email", "endereco"]}),
         ("Outros dados", {"fields": ["fonte", "status", "notas", "produto_interesse", "data_conversao"]})
     ]
-    list_display = ("nome", "telefone", "email", "endereco", "status")
+    list_display = ("nome", "telefone", "email", "endereco", "status", "responsavel")
     list_filter = ("status", )
 
 
