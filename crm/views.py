@@ -1,13 +1,13 @@
+import http
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.db.models.fields.related import ReverseManyToOneDescriptor
 from django.views import generic
 from django.urls import reverse_lazy
-from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
+from django.http import HttpResponse
 
 from .forms import ProdutoForm, EstoqueForm, ClienteForm, LeadForm
 from .models import Produto, Estoque, Cliente, Lead
-from .utils import apagar_objeto
+from .utils import apagar_objeto, converter_lead_em_cliente
 
 
 class IndexView(generic.TemplateView):
@@ -133,3 +133,14 @@ class LeadUpdate(VerificarSuperusuarioMixin, generic.UpdateView):
 def apagar_lead(request, pk):
     resposta = apagar_objeto(request, pk, Lead, "leads")
     return resposta
+
+
+class ConverterLeadView(VerificarSuperusuarioMixin, generic.View):
+    def post(self, request, pk):
+        lead = get_object_or_404(Lead, id=pk)
+
+        try:
+            cliente = converter_lead_em_cliente(lead)
+            return redirect("clientes")
+        except ValueError as erro:
+            return HttpResponse(f"Erro: {erro}", status=400)

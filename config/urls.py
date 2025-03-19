@@ -40,5 +40,6 @@ urlpatterns = [
     path("leads/", views.LeadList.as_view(), name="leads"),
     path("leads/novo/", views.LeadFormCreate.as_view(), name="criar_lead"),
     path("leads/<int:pk>/editar/", views.LeadUpdate.as_view(), name="editar_lead"),
-    path("leads/<int:pk>/apagar/", views.apagar_lead, name="apagar_lead")
+    path("leads/<int:pk>/apagar/", views.apagar_lead, name="apagar_lead"),
+    path("leads/<int:pk>/converter/", views.ConverterLeadView.as_view(), name="converter_lead")
 ]

@@ -26,7 +26,16 @@
                 style="display: none">
             {% csrf_token %}
           </form>
-          <button type="submit" onclick="apagarObjeto({{ lead.id }})">Apagar</button>
+          <button type="submit" onclick="apagarObjeto({{ lead.id }})">> Apagar</button>
+        </li>
+        <li>
+          <form id="form-converter-{{ lead.id }}"
+                method="post"
+                action="{% url 'converter_lead' lead.id %}"
+                style="display: none">
+            {% csrf_token %}
+          </form>
+          <button type="submit" onclick="converterLead({{ lead.id }})">> Converter</button>
         </li>
       {% else %}
         <li>{{ lead }}</li>
@@ -39,4 +48,12 @@
     {% endfor %}
   </ul>
   <script src="{% static 'utils.js' %}"></script>
+  <script>
+    function converterLead(idProduto) {
+      let confirmado = confirm("Tem certeza que quer converter este lead em cliente?");
+      if (confirmado) {
+        document.getElementById("form-converter-" + idProduto).submit();
+      }
+    }
+  </script>
 {% endblock content %}

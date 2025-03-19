@@ -378,3 +378,59 @@ class ApagarLeadTest(TestCase):
         resposta = self.client.get(self.url)
 
         self.assertEqual(resposta.status_code, 403)
+
+
+class ConverterLeadViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.super_usuario = User.objects.create_superuser(
+            username="admin", password="admin"
+        )
+
+    def setUp(self):
+        self.lead_qualificado = Lead.objects.create(
+            nome="Lead Qualificado",
+            telefone="123456789",
+            email="lead@email.com",
+            endereco="Rua bem Real, 123",
+            fonte="Website",
+            status="qualificado",
+            produto_interesse="vasos",
+            responsavel=self.super_usuario,
+        )
+
+        self.lead_novo = Lead.objects.create(
+            nome="Lead Novo",
+            telefone="987654321",
+            email="leadnovo@exemplo.com",
+            endereco="Avenidaaaaaa, 456",
+            fonte="E-mail",
+            status="novo",
+            produto_interesse="vasos",
+            responsavel=self.super_usuario,
+        )
+
+    def test_converter_lead_sucesso(self):
+        self.client.login(username="admin", password="admin")
+        url = reverse("converter_lead", kwargs={"pk": self.lead_qualificado.pk})
+
+        resposta = self.client.post(url)
+
+        self.assertRedirects(resposta, reverse("clientes"))
+
+        cliente = Cliente.objects.get(nome=self.lead_qualificado.nome)
+        self.assertEqual(cliente.nome, self.lead_qualificado.nome)
+        self.assertEqual(cliente.telefone, self.lead_qualificado.telefone)
+        self.assertEqual(cliente.email, self.lead_qualificado.email)
+        self.assertEqual(cliente.status, "ativo")
+
+    def test_converter_lead_erro_status_inadequado(self):
+        self.client.login(username="admin", password="admin")
+        url = reverse("converter_lead", kwargs={"pk": self.lead_novo.pk})
+
+        # Faz uma requisição GET
+        resposta = self.client.post(url)
+
+        # Verifica se a resposta contém uma mensagem de erro
+        self.assertEqual(resposta.status_code, 400)
+        self.assertIn("Erro", resposta.content.decode())
