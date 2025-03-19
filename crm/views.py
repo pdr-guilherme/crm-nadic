@@ -35,6 +35,11 @@ class ProdutoCreateForm(VerificarSuperusuarioMixin, generic.FormView):
         form.save()
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context["titulo"] = "Adicionar Produto"
+        return context
+
 
 class ProdutoUpdate(VerificarSuperusuarioMixin, generic.UpdateView):
     model = Produto
@@ -42,6 +47,10 @@ class ProdutoUpdate(VerificarSuperusuarioMixin, generic.UpdateView):
     template_name = "crm/editar.html"
     success_url = reverse_lazy("produtos")
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context["titulo"] = "Atualizar Produto"
+        return context
 
 def apagar_produto(request, pk):
     resposta = apagar_objeto(request, pk, Produto, "produtos")
@@ -64,12 +73,21 @@ class EstoqueCreateForm(VerificarSuperusuarioMixin, generic.FormView):
         form.save()
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context["titulo"] = "Adicionar Produto ao Estoque"
+        return context
 
 class EstoqueUpdate(VerificarSuperusuarioMixin, generic.UpdateView):
     model = Estoque
     form_class = EstoqueForm
     template_name = "crm/editar.html"
     success_url = reverse_lazy("estoque")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context["titulo"] = "Atualizar Produto no Estoque"
+        return context
 
 
 def apagar_estoque(request, pk):
@@ -92,12 +110,22 @@ class ClienteFormCreate(VerificarSuperusuarioMixin, generic.FormView):
         form.save()
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context["titulo"] = "Adicionar Cliente"
+        return context
+
 
 class ClienteUpdate(VerificarSuperusuarioMixin, generic.UpdateView):
     model = Cliente
     form_class = ClienteForm
     template_name = "crm/editar.html"
     success_url = reverse_lazy("clientes")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context["titulo"] = "Atualizar Cliente"
+        return context
 
 
 def apagar_cliente(request, pk):
@@ -122,12 +150,22 @@ class LeadFormCreate(VerificarSuperusuarioMixin, generic.FormView):
         form.save()
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context["titulo"] = "Adicionar Lead"
+        return context
+
 
 class LeadUpdate(VerificarSuperusuarioMixin, generic.UpdateView):
     model = Lead
     form_class = LeadForm
     template_name = "crm/editar.html"
     success_url = reverse_lazy("leads")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context["titulo"] = "Atualizar Lead"
+        return context
 
 
 def apagar_lead(request, pk):
