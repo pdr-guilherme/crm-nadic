@@ -41,5 +41,9 @@ urlpatterns = [
     path("leads/novo/", views.LeadFormCreate.as_view(), name="criar_lead"),
     path("leads/<int:pk>/editar/", views.LeadUpdate.as_view(), name="editar_lead"),
     path("leads/<int:pk>/apagar/", views.apagar_lead, name="apagar_lead"),
-    path("leads/<int:pk>/converter/", views.ConverterLeadView.as_view(), name="converter_lead")
+    path("leads/<int:pk>/converter/", views.ConverterLeadView.as_view(), name="converter_lead"),
+    path("vendas/", views.VendaList.as_view(), name="vendas"),
+    path("vendas/novo/", views.VendaFormCreate.as_view(), name="criar_venda"),
+    path("vendas/<int:pk>/editar/", views.VendaUpdate.as_view(), name="editar_venda"),
+    path("vendas/<int:pk>/apagar/", views.apagar_venda, name="apagar_venda")
 ]

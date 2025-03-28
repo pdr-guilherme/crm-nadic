@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Estoque, Lead, Produto, Cliente
+from .models import Estoque, Lead, Produto, Cliente, Venda
 
 
 class ProdutoForm(forms.ModelForm):
@@ -27,4 +27,13 @@ class LeadForm(forms.ModelForm):
         exclude = ["responsavel"]
         widgets = {
             "data_conversao": forms.DateTimeInput(attrs={"type": "datetime-local"}),
+        }
+
+
+class VendaForm(forms.ModelForm):
+    class Meta:
+        model = Venda
+        fields = "__all__"
+        widgets = {
+            "produtos": forms.CheckboxSelectMultiple()
         }

@@ -1,0 +1,39 @@
+{% extends "crm/base.html" %}
+
+{% load static %}
+
+{% block content %}
+  <h1>Lista de vendas realizadas</h1>
+
+  {% if user.is_superuser %}
+    <p>
+      <a href="{% url 'criar_venda' %}">Adicionar Venda</a>
+    </p>
+  {% endif %}
+
+  <ul>
+    {% for venda in vendas %}
+
+      {% if user.is_superuser %}
+        <li>
+          {{ venda }} | <a href="{% url 'editar_venda' venda.id %}">editar</a>
+        </li>
+        <li>
+          <form id="form-apagar-{{ venda.id }}"
+                method="post"
+                action="{% url 'apagar_venda' venda.id %}"
+                style="display: none">
+            {% csrf_token %}
+          </form>
+          <button type="submit" onclick="apagarObjeto({{ venda.id }})">Apagar</button>
+        </li>
+      {% else %}
+        <li>{{ venda }}</li>
+      {% endif %}
+
+    {% empty %}
+      <li>Nenhuma venda foi registrada ainda.</li>
+    {% endfor %}
+  </ul>
+  <script src="{% static 'crm/utils.js' %}"></script>
+{% endblock content %}

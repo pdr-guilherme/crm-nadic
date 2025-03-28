@@ -1,12 +1,13 @@
-import http
+from django.contrib import messages
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.db.models import F
 from django.views import generic
 from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404, redirect
 from django.http import HttpResponse
 
-from .forms import ProdutoForm, EstoqueForm, ClienteForm, LeadForm
-from .models import Produto, Estoque, Cliente, Lead
+from .forms import ProdutoForm, EstoqueForm, ClienteForm, LeadForm, VendaForm
+from .models import Produto, Estoque, Cliente, Lead, Venda
 from .utils import apagar_objeto, converter_lead_em_cliente
 
 
@@ -52,6 +53,7 @@ class ProdutoUpdate(VerificarSuperusuarioMixin, generic.UpdateView):
         context["titulo"] = "Atualizar Produto"
         return context
 
+
 def apagar_produto(request, pk):
     resposta = apagar_objeto(request, pk, Produto, "produtos")
     return resposta
@@ -78,6 +80,7 @@ class EstoqueCreateForm(VerificarSuperusuarioMixin, generic.FormView):
         context["titulo"] = "Adicionar Produto ao Estoque"
         return context
 
+
 class EstoqueUpdate(VerificarSuperusuarioMixin, generic.UpdateView):
     model = Estoque
     form_class = EstoqueForm
@@ -93,6 +96,7 @@ class EstoqueUpdate(VerificarSuperusuarioMixin, generic.UpdateView):
 def apagar_estoque(request, pk):
     resposta = apagar_objeto(request, pk, Estoque, "estoque")
     return resposta
+
 
 # Clientes
 class ClienteList(generic.ListView):
@@ -182,3 +186,87 @@ class ConverterLeadView(VerificarSuperusuarioMixin, generic.View):
             return redirect("clientes")
         except ValueError as erro:
             return HttpResponse(f"Erro: {erro}", status=400)
+
+
+# Vendas
+class VendaList(generic.ListView):
+    model = Venda
+    context_object_name = "vendas"
+    template_name = "crm/listar_vendas.html"
+
+
+class VendaFormCreate(VerificarSuperusuarioMixin, generic.FormView):
+    form_class = VendaForm
+    template_name = "crm/criar.html"
+    success_url = reverse_lazy("vendas")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["titulo"] = "Adicionar Venda"
+        return context
+
+    def form_valid(self, form):
+        form.save(commit=False)
+
+        produtos = form.cleaned_data["produtos"]
+        for produto in produtos:
+            estoque = produto.estoque
+            if estoque.quantia > 0:
+                estoque.quantia = F("quantia") - 1
+                estoque.save()
+            else:
+                messages.error(self.request, f"{produto.nome} não disponível, tente novamente")
+                return super().form_invalid(form)
+
+        form.save()
+        return super().form_valid(form)
+
+
+class VendaUpdate(VerificarSuperusuarioMixin, generic.UpdateView):
+    model = Venda
+    form_class = VendaForm
+    template_name = "crm/editar.html"
+    success_url = reverse_lazy("vendas")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["titulo"] = "Atualizar Venda"
+        return context
+
+    def form_valid(self, form):
+        if "produtos" in form.changed_data:
+            produtos_originais = form["produtos"].initial
+            produtos = form.cleaned_data["produtos"]
+
+            # produto adicionado à lista
+            for produto in produtos:
+                if produto not in produtos_originais:
+                    estoque = produto.estoque
+                    if estoque.quantia > 0:
+                        estoque.quantia = F("quantia") - 1
+                        estoque.save()
+                    else:
+                        messages.error(self.request, f"{produto.nome} não disponível, tente novamente")
+                        return super().form_invalid(form)
+
+            # produto removido da lista
+            for produto_original in produtos_originais:
+                if produto_original not in produtos:
+                    estoque = produto_original.estoque
+                    estoque.quantia = F("quantia") + 1
+                    estoque.save()
+
+        form.save()
+        return super().form_valid(form)
+
+
+def apagar_venda(request, pk):
+    venda = get_object_or_404(Venda, id=pk)
+
+    for produto in venda.produtos.all():
+        estoque = produto.estoque
+        estoque.quantia = F("quantia") + 1
+        estoque.save()
+
+    resposta = apagar_objeto(request, pk, Venda, "vendas")
+    return resposta
