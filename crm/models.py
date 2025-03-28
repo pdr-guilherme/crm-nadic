@@ -114,3 +114,7 @@ class Venda(models.Model):
 
     def __str__(self):
         return f"Venda {self.id} - {self.cliente.nome} - {self.data_venda} - {self.forma_pagamento}"
+
+    @property
+    def valor_total(self):
+        return sum(produto.preco for produto in self.produtos.all())
