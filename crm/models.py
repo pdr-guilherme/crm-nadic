@@ -102,38 +102,15 @@ class Venda(models.Model):
     ]
 
     cliente = models.ForeignKey(Cliente, on_delete=models.SET_NULL, related_name="vendas", null=True)
-    produtos = models.ManyToManyField(Produto, through="ItemVenda")
+    produtos = models.ManyToManyField(Produto, related_name="vendas")
     status = models.CharField("Status", max_length=20, choices=STATUS_CHOICES, default="em_processamento")
     data_venda = models.DateTimeField("Data da venda", auto_now_add=True)
     forma_pagamento = models.CharField("Forma de pagamento", max_length=50)
 
-    def __str__(self):
-        return f"Venda {self.id} - {self.cliente.nome} - {self.data_venda.strftime('%d/%m/%Y %H:%M')} - {self.forma_pagamento}"
-
-    def calcular_valor_total(self):
-        total = sum([item.subtotal() for item in self.itens.all()])
-        self.valor_total = total
-        self.save()
-
-    def processar_venda(self):
-        for item in self.itens.all():
-            estoque = item.produto.estoque
-            estoque.quantia -= item.quantidade
-            estoque.save()
-
-        self.status = "concluida"
-        self.save()
-
-
-class ItemVenda(models.Model):
-    venda = models.ForeignKey(Venda, on_delete=models.CASCADE, related_name="itens")
-    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
-    quantidade = models.PositiveIntegerField("Quantidade comprada")
-    preco_unitario = models.DecimalField("Preço unitário", max_digits=7, decimal_places=2)
+    class Meta:
+        ordering = ["-data_venda",]
+        verbose_name = "venda"
+        verbose_name_plural = "vendas"
 
     def __str__(self):
-        return f"{self.quantidade}x {self.produto.nome} - Venda {self.venda.id}"
-
-    @property
-    def subtotal(self):
-        return self.quantidade * self.preco_unitario
+        return f"Venda {self.id} - {self.cliente.nome} - {self.data_venda} - {self.forma_pagamento}"

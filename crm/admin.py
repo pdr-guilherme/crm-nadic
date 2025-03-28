@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Cliente, ItemVenda, Lead, Produto, Estoque, Venda
+from .models import Cliente, Lead, Produto, Estoque, Venda
 
 
 class ProdutoAdmin(admin.ModelAdmin):
@@ -33,18 +33,12 @@ class LeadAdmin(admin.ModelAdmin):
     list_filter = ("status", )
 
 
-class ItemVendaInline(admin.TabularInline):
-    model = ItemVenda
-    show_change_link = True
-
-
 class VendaAdmin(admin.ModelAdmin):
     fieldsets = [
-        ("Dados da venda", {"fields": ["cliente",]}),
+        ("Dados da venda", {"fields": ["cliente", "produtos"]}),
         ("Outros dados", {"fields": ["status", "forma_pagamento"]})
     ]
     list_display = ("cliente", "status", "data_venda", "forma_pagamento")
-    inlines = [ItemVendaInline]
 
 
 admin.site.register(Produto, ProdutoAdmin)
