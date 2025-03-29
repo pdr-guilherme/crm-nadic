@@ -1,0 +1,76 @@
+# Docstrings para testes
+
+# ClienteCreateFormTest
+ClienteCreateFormTest.test_form_valid:
+    """Testa se o formulário de criação de cliente com dados válidos redireciona corretamente e cria o cliente."""
+
+ClienteCreateFormTest.test_form_invalid:
+    """Testa se o formulário de criação de cliente com dados inválidos retorna erro de validação no campo 'endereco'."""
+
+# ApagarClienteTest
+ApagarClienteTest.test_apagar_superusuario:
+    """Testa se o superusuário consegue apagar um cliente e é redirecionado para a lista de clientes."""
+
+ApagarClienteTest.test_apagar_usuario_comum:
+    """Testa se um usuário comum não pode apagar um cliente e recebe um status de erro 403."""
+
+ApagarClienteTest.test_apagar_sem_metodo_post:
+    """Testa se ao tentar apagar um cliente sem usar o método POST, o servidor retorna erro 403."""
+
+# EstoqueCreateFormTest
+EstoqueCreateFormTest.test_form_valid:
+    """Testa se o formulário de criação de estoque com dados válidos redireciona corretamente e cria o estoque."""
+
+EstoqueCreateFormTest.test_form_invalid:
+    """Testa se o formulário de criação de estoque com quantia inválida (menor que 0) retorna erro de validação."""
+
+# ApagarEstoqueTest
+ApagarEstoqueTest.test_apagar_superusuario:
+    """Testa se o superusuário consegue apagar um estoque e é redirecionado para a lista de estoque."""
+
+ApagarEstoqueTest.test_apagar_usuario_comum:
+    """Testa se um usuário comum não pode apagar um estoque e recebe um status de erro 403."""
+
+ApagarEstoqueTest.test_apagar_sem_metodo_post:
+    """Testa se ao tentar apagar um estoque sem usar o método POST, o servidor retorna erro 403."""
+
+# ProdutoCreateFormTest
+ProdutoCreateFormTest.test_form_valid:
+    """Testa se o formulário de criação de produto com dados válidos redireciona corretamente e cria o produto."""
+
+ProdutoCreateFormTest.test_form_invalid:
+    """Testa se o formulário de criação de produto com categoria inválida retorna erro de validação."""
+
+# ApagarProdutoTest
+ApagarProdutoTest.test_apagar_superusuario:
+    """Testa se o superusuário consegue apagar um produto e é redirecionado para a lista de produtos."""
+
+ApagarProdutoTest.test_apagar_usuario_comum:
+    """Testa se um usuário comum não pode apagar um produto e recebe um status de erro 403."""
+
+ApagarProdutoTest.test_apagar_sem_metodo_post:
+    """Testa se ao tentar apagar um produto sem usar o método POST, o servidor retorna erro 403."""
+
+# VerificarSuperusuarioMixinTest
+VerificarSuperusuarioMixinTest.test_mixin_sem_permissao:
+    """Testa se um usuário sem permissão recebe erro 403 ao tentar acessar uma URL protegida."""
+
+VerificarSuperusuarioMixinTest.test_mixin_com_permissao:
+    """Testa se um superusuário com permissão consegue acessar uma URL protegida e recebe status 200."""
+
+# ConverterLeadViewTest
+ConverterLeadViewTest.test_converter_lead_sucesso:
+    """Testa se a conversão de um lead qualificado em cliente é bem-sucedida e cria um cliente com os dados do lead."""
+
+ConverterLeadViewTest.test_converter_lead_erro_status_inadequado:
+    """Testa se a conversão de um lead com status inadequado (novo) retorna erro 400 com mensagem de erro."""
+
+# ApagarVendaTest
+ApagarVendaTest.test_apagar_superusuario:
+    """Testa se o superusuário consegue apagar uma venda e é redirecionado para a lista de vendas."""
+
+ApagarVendaTest.test_apagar_usuario_comum:
+    """Testa se um usuário comum não pode apagar uma venda e recebe um status de erro 403."""
+
+ApagarVendaTest.test_apagar_sem_metodo_post:
+    """Testa se ao tentar apagar uma venda sem usar o método POST, o servidor retorna erro 403."""
