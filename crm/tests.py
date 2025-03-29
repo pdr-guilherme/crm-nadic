@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 
-from .models import Cliente, Estoque, Produto, Lead
+from .models import Cliente, Estoque, Produto, Lead, Venda
 
 
 class VerificarSuperusuarioMixinTest(TestCase):
@@ -383,9 +383,7 @@ class ApagarLeadTest(TestCase):
 class ConverterLeadViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.super_usuario = User.objects.create_superuser(
-            username="admin", password="admin"
-        )
+        cls.super_usuario = User.objects.create_superuser("admin", "admin@email.com", "admin")
 
     def setUp(self):
         self.lead_qualificado = Lead.objects.create(
@@ -434,3 +432,136 @@ class ConverterLeadViewTest(TestCase):
         # Verifica se a resposta contém uma mensagem de erro
         self.assertEqual(resposta.status_code, 400)
         self.assertIn("Erro", resposta.content.decode())
+
+
+class VendaFormCreateTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.super_usuario = User.objects.create_superuser("admin", "admin@email.com", "admin")
+        cls.cliente = Cliente.objects.create(
+            nome="Cliente comum",
+            telefone="(11) 99122-1331",
+            email="cliente@email.com",
+            endereco="Ruas das Flores, 123",
+            fonte="Viu na rua",
+            status="ativo",
+            notas=""
+        )
+        cls.produto1 = Produto.objects.create(
+            nome="Produto Teste 1",
+            descricao="Produto de Teste 1",
+            preco=10.99,
+            categoria="flores",
+            ativo=True
+        )
+        cls.produto2 = Produto.objects.create(
+            nome="Produto Teste 2",
+            descricao="Produto de Teste 2",
+            preco=20.99,
+            categoria="vasos",
+            ativo=True
+        )
+        cls.estoque1 = Estoque.objects.create(produto=cls.produto1, quantia=10)
+        cls.estoque2 = Estoque.objects.create(produto=cls.produto2, quantia=0)
+
+        cls.url = reverse("criar_venda")
+
+    def test_form_valid(self):
+        self.client.login(username="admin", password="admin")
+
+        dados_validos = {
+            "cliente": self.cliente.id,
+            "produtos": [self.produto1.id],
+            "status": "concluida",
+            "forma_pagamento": "Cartão de Crédito",
+        }
+
+        resposta = self.client.post(self.url, dados_validos)
+
+
+        self.assertRedirects(resposta, reverse("vendas"))
+        self.assertEqual(resposta.status_code, 302)
+        self.assertTrue(Venda.objects.filter(cliente=self.cliente).exists())
+
+        self.estoque1.refresh_from_db()
+        self.assertEqual(self.estoque1.quantia, 9)
+
+    def test_form_invalid(self):
+        self.client.login(username="admin", password="admin")
+
+        dados_invalidos = {
+            "cliente": self.cliente.id,
+            "produtos": [self.produto2.id], # produto sem estoque
+            "status": "concluida",
+            "forma_pagamento": "Cartão de Crédito",
+        }
+
+        resposta = self.client.post(self.url, dados_invalidos)
+
+        self.assertEqual(resposta.status_code, 200)
+        self.assertContains(resposta, f"{self.produto2.nome} não disponível, tente novamente")
+
+
+class ApagarVendaTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.super_usuario = User.objects.create_superuser("admin", "admin@email.com", "admin")
+        cls.usuario_comum = User.objects.create_user(
+            "usuario", "usuario@email.com", "usuario"
+        )
+        cls.cliente = Cliente.objects.create(
+            nome="Cliente comum",
+            telefone="(11) 99122-1331",
+            email="cliente@email.com",
+            endereco="Ruas das Flores, 123",
+            fonte="Viu na rua",
+            status="ativo",
+            notas=""
+        )
+
+    def setUp(self):
+        self.produto1 = Produto.objects.create(
+            nome="Produto Teste 1",
+            descricao="Produto de Teste 1",
+            preco=10.99,
+            categoria="flores",
+            ativo=True
+        )
+        self.produto2 = Produto.objects.create(
+            nome="Produto Teste 2",
+            descricao="Produto de Teste 2",
+            preco=20.99,
+            categoria="vasos",
+            ativo=True
+        )
+        self.estoque1 = Estoque.objects.create(produto=self.produto1, quantia=10)
+        self.estoque2 = Estoque.objects.create(produto=self.produto2, quantia=5)
+
+        self.venda = Venda.objects.create(cliente=self.cliente, forma_pagamento="Crédito", status="concluida")
+        self.venda.produtos.set([self.produto1, self.produto2])
+
+        self.url = reverse("apagar_venda", kwargs={"pk": self.venda.id})
+
+    def test_apagar_superusuario(self):
+        self.client.login(username="admin", password="admin")
+
+        resposta = self.client.post(self.url)
+
+        self.assertEqual(Venda.objects.count(), 0)
+        self.assertRedirects(resposta, reverse("vendas"))
+
+    def test_apagar_usuario_comum(self):
+        self.client.login(username="usuario", password="usuario")
+
+        resposta = self.client.post(self.url)
+
+        self.assertEqual(Venda.objects.count(), 1)
+        self.assertEqual(resposta.status_code, 403)
+
+    def test_apagar_sem_metodo_post(self):
+        self.client.login(username="admin", password="admin")
+
+        resposta = self.client.get(self.url)
+
+        self.assertEqual(Venda.objects.count(), 1)
+        self.assertEqual(resposta.status_code, 403)
