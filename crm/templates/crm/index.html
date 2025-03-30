@@ -1,12 +1,27 @@
 {% extends "crm/base.html" %}
 
 {% block content %}
-  <h1>Menu Principal</h1>
-  <ul>
-    <li><a href="{% url 'produtos' %}">Ver produtos</a></li>
-    <li><a href="{% url 'estoque' %}">Ver estoque</a></li>
-    <li><a href="{% url 'clientes' %}">Ver clientes</a></li>
-    <li><a href="{% url 'leads' %}">Ver leads</a></li>
-    <li><a href="{% url 'vendas' %}">Ver vendas</a></li>
-  </ul>
+  <div class="container text-center">
+    <div class="row">
+      <div class="col">
+        <h1 class="mt-3">Menu Principal</h1>
+        <h2 class="mb-3">Faturamento Total: {{ vendas_totais }} R$</h2>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <a class="btn btn-secondary btn-lg mx-2 my-2" href="{% url 'produtos' %}">Ver produtos</a>
+        <a class="btn btn-secondary btn-lg mx-2 my-2" href="{% url 'estoque' %}">Ver estoque</a>
+        <a class="btn btn-secondary btn-lg mx-2 my-2" href="{% url 'clientes' %}">Ver clientes</a>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <a class="btn btn-secondary btn-lg mx-2 my-2" href="{% url 'leads' %}">Ver leads</a>
+        <a class="btn btn-secondary btn-lg mx-2 my-2" href="{% url 'vendas' %}">Ver vendas</a>
+      </div>
+    </div>
+  </div>
 {% endblock content %}

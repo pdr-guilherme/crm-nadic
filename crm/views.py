@@ -14,6 +14,12 @@ from .utils import apagar_objeto, converter_lead_em_cliente
 class IndexView(generic.TemplateView):
     template_name = "crm/index.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        vendas_totais = sum([venda.valor_total for venda in Venda.objects.all()])
+        context["vendas_totais"] = vendas_totais
+        return context
+
 
 class VerificarSuperusuarioMixin(UserPassesTestMixin):
     def test_func(self):
