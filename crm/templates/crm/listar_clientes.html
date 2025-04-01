@@ -3,40 +3,66 @@
 {% load static %}
 
 {% block content %}
-  <h1>Lista de Clientes</h1>
+  <div class="container text-center my-3">
+    <h1>Lista de Clientes</h1>
 
-  {% if user.is_superuser %}
-    <p>
-      <a href="{% url 'criar_cliente' %}">Adicionar Cliente</a>
-    </p>
-  {% endif %}
+    {% if user.is_superuser %}
+      <a class="btn btn-primary"
+         href="{% url 'criar_cliente' %}"
+         role="button">Adicionar Cliente</a>
+    {% endif %}
 
-  <ul>
-    {% for cliente in clientes %}
+  </div>
+  <table class="table table-hover align-middle">
+    <thead>
+      <tr>
+        <th scope="col">Nome</th>
+        <th scope="col">E-mail</th>
+        <th scope="col">Situação</th>
 
-      {% if user.is_superuser %}
-        <li>{{ cliente }}</li>
-        <li>
-          <a href="{% url 'editar_cliente' cliente.id %}">Editar</a>
-        </li>
-        <li>
-          <form id="form-apagar-{{ cliente.id }}"
-                method="post"
-                action="{% url 'apagar_cliente' cliente.id %}"
-                style="display: none">
-            {% csrf_token %}
-          </form>
-          <button type="submit" onclick="apagarObjeto({{ cliente.id }})">Apagar</button>
-        </li>
-      {% else %}
-        <li>{{ cliente }}</li>
-      {% endif %}
+        {% if user.is_superuser %}<th scope="col">Opções</th>{% endif %}
 
-    {% empty %}
-      <li>
-        <h2>Não há clientes cadastrados ainda</h2>
-      </li>
-    {% endfor %}
-  </ul>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cliente in clientes %}
+        <tr>
+          <td>{{ cliente.nome }}</td>
+          <td>{{ cliente.email }}</td>
+          <td>{{ cliente.status|capfirst }}</td>
+
+          {% if user.is_superuser %}
+            <td class="me-3">
+              <a class="btn btn-primary"
+                 href="{% url 'editar_cliente' cliente.id %}"
+                 role="button">Editar</a>
+              <form id="form-apagar-{{ cliente.id }}"
+                    method="post"
+                    action="{% url 'apagar_cliente' cliente.id %}"
+                    style="display: none">
+                {% csrf_token %}
+              </form>
+              <button class="btn btn-danger"
+                      type="submit"
+                      onclick="apagarObjeto({{ cliente.id }})">Apagar</button>
+            </td>
+          {% endif %}
+
+        </tr>
+      {% empty %}
+
+        {% if user.is_superuser %}
+          <tr>
+            <td colspan="3">Sem clientes cadastrados</td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="2">Sem clientes cadastrados</td>
+          </tr>
+        {% endif %}
+
+      {% endfor %}
+    </tbody>
+  </table>
   <script src="{% static 'crm/utils.js' %}"></script>
 {% endblock content %}
