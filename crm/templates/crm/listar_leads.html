@@ -3,57 +3,70 @@
 {% load static %}
 
 {% block content %}
-  <h1>Lista de Leads</h1>
+  <div class="container text-center my-3">
+    <h1>Lista de Leads</h1>
 
-  {% if user.is_superuser %}
-    <p>
-      <a href="{% url 'criar_lead' %}">Adicionar Lead</a>
-    </p>
-  {% endif %}
+    {% if user.is_superuser %}
+      <a class="btn btn-primary" href="{% url 'criar_lead' %}">Adicionar Lead</a>
+    {% endif %}
+  </div>
 
-  <ul>
-    {% for lead in leads %}
+  <table class="table table-hover align-middle">
+    <thead>
+      <tr>
+        <th scope="col">Nome</th>
+        <th scope="col">Telefone</th>
+        <th scope="col">E-mail</th>
+        <th scope="col">Endereço</th>
+        <th scope="col">Status</th>
 
-      {% if user.is_superuser %}
-        <li>{{ lead }}</li>
-        <li>
-          <a href="{% url 'editar_lead' lead.id %}">> Editar</a>
-        </li>
-        <li>
-          <form id="form-apagar-{{ lead.id }}"
-                method="post"
-                action="{% url 'apagar_lead' lead.id %}"
-                style="display: none">
-            {% csrf_token %}
-          </form>
-          <button type="submit" onclick="apagarObjeto({{ lead.id }})">> Apagar</button>
-        </li>
-        <li>
-          <form id="form-converter-{{ lead.id }}"
+        {% if user.is_superuser%}<th scope="col">Opções</th>{% endif %}
+      </tr>
+
+    </thead>
+    <tbody>
+      {% for lead in leads %}
+        <tr>
+          <td>{{ lead.nome }}</td>
+          <td>{{ lead.telefone }}</td>
+          <td>{{ lead.email }}</td>
+          <td>{{ lead.endereco }}</td>
+          <td>{{ lead.status|capfirst }}</td>
+
+          {% if user.is_superuser %}
+            <td>
+              <a class="btn btn-primary" href="{% url 'editar_lead' lead.id %}" role="button">Editar</a>
+
+              <form id="form-converter-{{ lead.id }}"
                 method="post"
                 action="{% url 'converter_lead' lead.id %}"
                 style="display: none">
-            {% csrf_token %}
-          </form>
-          <button type="submit" onclick="converterLead({{ lead.id }})">> Converter</button>
-        </li>
-      {% else %}
-        <li>{{ lead }}</li>
-      {% endif %}
+                {% csrf_token %}
+              </form>
+              <button class="btn btn-secondary" type="submit" onclick="converterLead({{ lead.id }})">Converter</button>
 
-    {% empty %}
-      <li>
-        <h2>Não há leads cadastrados ainda</h2>
-      </li>
-    {% endfor %}
-  </ul>
+              <form id="form-apagar-{{ lead.id }}"
+                method="post"
+                action="{% url 'apagar_lead' lead.id %}"
+                style="display: none">
+                {% csrf_token %}
+              </form>
+              <button class="btn btn-danger" type="submit" onclick="apagarObjeto({{ lead.id }})">Apagar</button>
+            </td>
+          {% endif %}
+        </tr>
+      {% empty %}
+        {% if user.is_superuser %}
+          <tr>
+            <td class="text-center" colspan="6">Sem leads cadastrados</td>
+          </tr>
+        {% else %}
+          <tr>
+            <td class="text-center" colspan="5">Sem leads cadastrados</td>
+          </tr>
+        {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
   <script src="{% static 'crm/utils.js' %}"></script>
-  <script>
-    function converterLead(idProduto) {
-      let confirmado = confirm("Tem certeza que quer converter este lead em cliente?");
-      if (confirmado) {
-        document.getElementById("form-converter-" + idProduto).submit();
-      }
-    }
-  </script>
 {% endblock content %}
