@@ -2,12 +2,14 @@
 
 {% load static %}
 
+{% block title %}<title>VerdeZen | Leads</title>{% endblock %}
+
 {% block content %}
   <div class="container text-center my-3">
     <h1>Lista de Leads</h1>
 
     {% if user.is_superuser %}
-      <a class="btn btn-primary" href="{% url 'criar_lead' %}">Adicionar Lead</a>
+      <a class="btn btn-primary" href="{% url 'criar_lead' %}" role="button">Adicionar Lead</a>
     {% endif %}
   </div>
 
