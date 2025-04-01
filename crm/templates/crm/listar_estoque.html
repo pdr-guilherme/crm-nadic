@@ -2,20 +2,23 @@
 
 {% load static %}
 
+{% block title %}<title>VerdeZen | Estoque</title>{% endblock %}
+
 {% block content %}
-  <h1>Lista de produtos no estoque</h1>
-  {% if user.is_superuser %}
-    <p>
-      <a href="{% url 'criar_estoque' %}">Adicionar produto ao estoque</a>
-    </p>
-  {% endif %}
-  <table>
+  <div class="container text-center my-3">
+    <h1>Lista de produtos no estoque</h1>
+    {% if user.is_superuser %}
+      <a class="btn btn-primary" href="{% url 'criar_estoque' %}" role="button">Adicionar produto ao estoque</a>
+    {% endif %}
+  </div>
+
+  <table class="table table-hover align-middle">
     <thead>
       <tr>
-        <th>Produto</th>
-        <th>Quantia disponível</th>
+        <th scope="col">Produto</th>
+        <th scope="col">Quantia disponível</th>
 
-        {% if user.is_superuser %}<th>Opções</th>{% endif %}
+        {% if user.is_superuser %}<th scope="col">Opções</th>{% endif %}
 
       </tr>
     </thead>
@@ -27,7 +30,7 @@
 
         {% if user.is_superuser %}
           <td>
-            <a href="{% url 'editar_estoque' produto_estoque.id %}">Editar</a>
+            <a class="btn btn-primary" href="{% url 'editar_estoque' produto_estoque.id %}" role="button">Editar</a>
 
             <form id="form-apagar-{{ produto_estoque.id }}"
                   method="post"
@@ -35,7 +38,7 @@
                   style="display: none">
               {% csrf_token %}
             </form>
-            <button type="submit" onclick="apagarObjeto({{ produto_estoque.id }})">Apagar</button>
+            <button class="btn btn-danger" type="submit" onclick="apagarObjeto({{ produto_estoque.id }})">Apagar</button>
           </td>
         {% endif %}
         </tr>
