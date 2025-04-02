@@ -31,6 +31,7 @@ produto_urls = [
 estoque_urls = [
     path("", views.EstoqueList.as_view(), name="estoque"),
     path("novo/", views.EstoqueCreateForm.as_view(), name="criar_estoque"),
+    path("<int:pk>/ver/", views.EstoqueDetail.as_view(), name="ver_estoque"),
     path("<int:pk>/editar/", views.EstoqueUpdate.as_view(), name="editar_estoque"),
     path("<int:pk>/apagar/", views.apagar_estoque, name="apagar_estoque"),
 ]

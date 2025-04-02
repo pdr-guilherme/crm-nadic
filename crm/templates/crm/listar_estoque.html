@@ -25,7 +25,7 @@
     <tbody>
       {% for produto_estoque in estoque %}
         <tr>
-          <td>{{ produto_estoque.produto }}</td>
+          <td><a href="{{ produto_estoque.get_absolute_url }}">{{ produto_estoque.produto }}</a></td>
           <td>{{ produto_estoque.quantia }}</td>
 
         {% if user.is_superuser %}

@@ -78,6 +78,12 @@ class EstoqueList(generic.ListView):
     template_name = "crm/listar_estoque.html"
 
 
+class EstoqueDetail(generic.DetailView):
+    model = Estoque
+    template_name = "crm/estoque.html"
+    context_object_name = "estoque"
+
+
 class EstoqueCreateForm(VerificarSuperusuarioMixin, generic.FormView):
     form_class = EstoqueForm
     template_name = "crm/criar.html"

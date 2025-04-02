@@ -43,6 +43,9 @@ class Estoque(models.Model):
     def __str__(self) -> str:
         return f"Produto {self.produto} - {self.quantia} disponíveis em estoque"
 
+    def get_absolute_url(self):
+        return reverse("ver_estoque", kwargs={"pk": self.id})
+
 
 class Cliente(models.Model):
     STATUS_CHOICES = {
