@@ -23,6 +23,7 @@ from crm import views
 produto_urls = [
     path("", views.ProdutoList.as_view(), name="produtos"),
     path("novo/", views.ProdutoCreateForm.as_view(), name="criar_produto"),
+    path("<int:pk>/ver/", views.ProdutoDetail.as_view(), name="ver_produto"),
     path("<int:pk>/editar/", views.ProdutoUpdate.as_view(), name="editar_produto"),
     path("<int:pk>/apagar/", views.apagar_produto, name="apagar_produto"),
 ]

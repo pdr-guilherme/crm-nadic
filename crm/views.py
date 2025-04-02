@@ -33,6 +33,12 @@ class ProdutoList(generic.ListView):
     template_name = "crm/listar_produtos.html"
 
 
+class ProdutoDetail(generic.DetailView):
+    model = Produto
+    template_name = "crm/produto.html"
+    context_object_name = "produto"
+
+
 class ProdutoCreateForm(VerificarSuperusuarioMixin, generic.FormView):
     form_class = ProdutoForm
     template_name = "crm/criar.html"

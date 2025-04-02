@@ -1,0 +1,40 @@
+{% extends "crm/base.html" %}
+
+{% load static %}
+
+{% block title %}<title>VerdeZen | {{ produto.nome }}</title>{% endblock %}
+{% block content %}
+  <div class="container">
+    <h1 class="mt-3">Produto: {{ produto.nome }}</h1>
+    <p class="text-break fst-italic fs-3 text-body-secondary">{{ produto.descricao }}</p>
+    <h2>Outros Dados</h2>
+    <ul>
+      <li>Preço: R$ {{ produto.preco }}</li>
+      <li>Categoria: {{ produto.categoria|capfirst }}</li>
+      <li>Data de Criação: {{ produto.data_criacao }}</li>
+
+      {% if produto.ativo %}
+        <li>Produto atualmente ativo</li>
+      {% else %}
+        <li>Produto não ativo</li>
+      {% endif %}
+
+    </ul>
+
+    {% if user.is_superuser %}
+      <h2 class="mb-3">Opções</h2>
+      <a href="{% url 'editar_produto' produto.id %}" class="btn btn-primary">Editar</a>
+      <form id="form-apagar-{{ produto.id }}"
+            method="post"
+            action="{% url 'apagar_produto' produto.id %}"
+            style="display: none">
+        {% csrf_token %}
+      </form>
+      <button class="btn btn-danger"
+              type="submit"
+              onclick="apagarObjeto({{ produto.id }})">Apagar</button>
+    {% endif %}
+
+  </div>
+  <script src="{% static 'crm/utils.js' %}"></script>
+{% endblock content %}

@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.urls import reverse
 
 # tipo de loja: floricultura
 
@@ -28,6 +29,9 @@ class Produto(models.Model):
 
     def __str__(self) -> str:
         return f"{self.nome} (R$ {self.preco}): {self.descricao}"
+
+    def get_absolute_url(self):
+        return reverse("ver_produto", kwargs={"pk": self.id})
 
 class Estoque(models.Model):
     """
