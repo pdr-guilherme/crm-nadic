@@ -1,7 +1,11 @@
 {% extends "crm/base.html" %}
 
+{% load crispy_forms_tags %}
+
+{% block title %}<title>VerdeZen | {{ titulo }}</title>{% endblock %}
+
 {% block content %}
-  <h1>{{ titulo }}</h1>
+  <h1 class="text-center my-3">{{ titulo }}</h1>
 
   {% if messages %}
     <ul class="messages">
@@ -13,7 +17,8 @@
 
   <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Salvar Mudanças">
+    <div class="container col-8">
+      {% crispy form %}
+    </div>
   </form>
 {% endblock content %}
