@@ -47,6 +47,7 @@ cliente_urls = [
 lead_urls = [
     path("", views.LeadList.as_view(), name="leads"),
     path("novo/", views.LeadFormCreate.as_view(), name="criar_lead"),
+    path("<int:pk>/ver/", views.LeadDetail.as_view(), name="ver_lead"),
     path("<int:pk>/editar/", views.LeadUpdate.as_view(), name="editar_lead"),
     path("<int:pk>/apagar/", views.apagar_lead, name="apagar_lead"),
     path(

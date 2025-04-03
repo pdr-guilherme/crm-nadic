@@ -29,7 +29,7 @@
     <tbody>
       {% for lead in leads %}
         <tr>
-          <td>{{ lead.nome }}</td>
+          <td><a href="{{ lead.get_absolute_url }}">{{ lead.nome }}</a></td>
           <td>{{ lead.telefone }}</td>
           <td>{{ lead.email }}</td>
           <td>{{ lead.endereco }}</td>

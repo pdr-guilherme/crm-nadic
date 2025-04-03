@@ -104,6 +104,9 @@ class Lead(models.Model):
     def __str__(self):
         return f"Lead {self.id} - {self.nome}, {self.email}, {self.status}"
 
+    def get_absolute_url(self):
+        return reverse("ver_lead", kwargs={"pk": self.id})
+
 
 class Venda(models.Model):
     STATUS_CHOICES = [

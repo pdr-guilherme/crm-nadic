@@ -168,6 +168,12 @@ class LeadList(generic.ListView):
     template_name = "crm/listar_leads.html"
 
 
+class LeadDetail(generic.DetailView):
+    model = Lead
+    template_name = "crm/lead.html"
+    context_object_name = "lead"
+
+
 class LeadFormCreate(VerificarSuperusuarioMixin, generic.FormView):
     form_class = LeadForm
     template_name = "crm/criar.html"
