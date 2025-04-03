@@ -225,6 +225,12 @@ class VendaList(generic.ListView):
     template_name = "crm/listar_vendas.html"
 
 
+class VendaDetail(generic.DetailView):
+    model = Venda
+    template_name = "crm/venda.html"
+    context_object_name = "venda"
+
+
 class VendaFormCreate(VerificarSuperusuarioMixin, generic.FormView):
     form_class = VendaForm
     template_name = "crm/criar.html"

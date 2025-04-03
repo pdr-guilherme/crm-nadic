@@ -28,7 +28,7 @@
     <tbody>
       {% for venda in vendas %}
         <tr>
-          <td>{{ venda.cliente.nome }}</td>
+          <td><a href="{{ venda.get_absolute_url }}">{{ venda.cliente.nome }}</a></td>
           <td>{{ venda.data_venda }}</td>
           <td>{{ venda.forma_pagamento }}</td>
           <td>{{ venda.status|capfirst }}</td>

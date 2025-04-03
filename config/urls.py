@@ -58,6 +58,7 @@ lead_urls = [
 venda_urls = [
     path("", views.VendaList.as_view(), name="vendas"),
     path("novo/", views.VendaFormCreate.as_view(), name="criar_venda"),
+    path("<int:pk>/ver/", views.VendaDetail.as_view(), name="ver_venda"),
     path("<int:pk>/editar/", views.VendaUpdate.as_view(), name="editar_venda"),
     path("<int:pk>/apagar/", views.apagar_venda, name="apagar_venda"),
 ]

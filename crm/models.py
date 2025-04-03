@@ -129,6 +129,9 @@ class Venda(models.Model):
     def __str__(self):
         return f"Venda {self.id} - {self.cliente.nome} - {self.data_venda} - {self.forma_pagamento}"
 
+    def get_absolute_url(self):
+        return reverse("ver_venda", kwargs={"pk": self.id})
+
     @property
     def valor_total(self):
         return sum(produto.preco for produto in self.produtos.all())
