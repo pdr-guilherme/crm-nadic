@@ -11,8 +11,8 @@ Foi usado o framework Django junto do banco de dados SQLite, ideal para projetos
 1. Clone o repositório:
 
     ```bash
-    git clone https://github.com/pdr-guilherme/diario-de-aprendizado.git
-    cd diario-de-aprendizado
+    git clone https://github.com/pdr-guilherme/crm-nadic.git
+    cd crm-nadic
     ```
 
 2. Crie um ambiente virtual (opcional, mas recomendado):
