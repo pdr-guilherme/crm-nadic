@@ -123,6 +123,12 @@ class ClienteList(generic.ListView):
     template_name = "crm/listar_clientes.html"
 
 
+class ClienteDetail(generic.DetailView):
+    model = Cliente
+    template_name = "crm/cliente.html"
+    context_object_name = "cliente"
+
+
 class ClienteFormCreate(VerificarSuperusuarioMixin, generic.FormView):
     form_class = ClienteForm
     template_name = "crm/criar.html"

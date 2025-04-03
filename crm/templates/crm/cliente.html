@@ -1,0 +1,46 @@
+{% extends "crm/base.html" %}
+
+{% load static %}
+
+{% block title %}<title>VerdeZen | {{ cliente.nome }}</title>{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <h1 class="mt-3">Cliente: {{ cliente.nome }}</h1>
+    <h2>Informações de contato</h2>
+    <ul>
+      <li>Telefone: {{ cliente.telefone }}</li>
+      <li>E-mail: {{ cliente.email }}</li>
+      <li>Endereço: {{ cliente.endereco }}</li>
+    </ul>
+
+    <h2>Outros dados</h2>
+    <ul>
+      <li>Fonte: {{ cliente.fonte }}</li>
+      <li>Situação: {{ cliente.status }}</li>
+
+      {% if cliente.notas %}
+        <li> Notas sobre o cliente: {{ cliente.notas }}</li>
+      {% else %}
+        <li>Sem notas sobre o cliente</li>
+      {% endif %}
+
+    </ul>
+
+    {% if user.is_superuser %}
+      <h2 class="mb-3">Opções</h2>
+      <a href="{% url 'editar_cliente' cliente.id %}" class="btn btn-primary">Editar</a>
+      <form id="form-apagar-{{ cliente.id }}"
+            method="post"
+            action="{% url 'apagar_cliente' cliente.id %}"
+            style="display: none">
+        {% csrf_token %}
+      </form>
+      <button class="btn btn-danger"
+              type="submit"
+              onclick="apagarObjeto({{ cliente.id }})">Apagar</button>
+    {% endif %}
+
+  </div>
+  <script src="{% static 'crm/utils.js' %}"></script>
+{% endblock content %}

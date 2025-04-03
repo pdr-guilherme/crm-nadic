@@ -39,6 +39,7 @@ estoque_urls = [
 cliente_urls = [
     path("", views.ClienteList.as_view(), name="clientes"),
     path("novo/", views.ClienteFormCreate.as_view(), name="criar_cliente"),
+    path("<int:pk>/ver/", views.ClienteDetail.as_view(), name="ver_cliente"),
     path("<int:pk>/editar/", views.ClienteUpdate.as_view(), name="editar_cliente"),
     path("<int:pk>/apagar/", views.apagar_cliente, name="apagar_cliente"),
 ]

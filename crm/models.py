@@ -33,6 +33,7 @@ class Produto(models.Model):
     def get_absolute_url(self):
         return reverse("ver_produto", kwargs={"pk": self.id})
 
+
 class Estoque(models.Model):
     """
     Classe responsável por gerenciar a quantidade de produtos disponíveis no estoque.
@@ -70,6 +71,9 @@ class Cliente(models.Model):
 
     def __str__(self) -> str:
         return f"Cliente {self.id} - {self.nome}, {self.email}, {self.status}"
+
+    def get_absolute_url(self):
+        return reverse("ver_cliente", kwargs={"pk": self.id})
 
 
 class Lead(models.Model):

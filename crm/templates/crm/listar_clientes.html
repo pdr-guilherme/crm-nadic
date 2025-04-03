@@ -29,7 +29,7 @@
     <tbody>
       {% for cliente in clientes %}
         <tr>
-          <td>{{ cliente.nome }}</td>
+          <td><a href="{{ cliente.get_absolute_url }}">{{ cliente.nome }}</a></td>
           <td>{{ cliente.email }}</td>
           <td>{{ cliente.status|capfirst }}</td>
 
